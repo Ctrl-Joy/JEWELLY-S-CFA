@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbf8f6">
+  <meta name="description" content="JEWEL — your own little space to learn.">
+  <title>JEWEL — Your own little space to learn</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body class="landing-page">
+  <header class="site-header">
+    <a class="wordmark" href="index.html" aria-label="JEWEL home"><span class="jewel-mark" aria-hidden="true">✦</span><span>JEWEL</span></a>
+    <div class="header-actions">
+      <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">◐</button>
+      <a class="quiet-link" href="dashboard.html">My Space <span aria-hidden="true">↗</span></a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> A SPACE OF YOUR OWN</div>
+        <h1>Your own little<br><em>space to learn.</em></h1>
+        <p class="hero-subtitle">Your subjects, your pace, your progress.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="dashboard.html">Enter my space <span aria-hidden="true">→</span></a>
+          <a class="text-action" href="#subjects">Explore subjects</a>
+        </div>
+        <div class="hero-note"><span class="note-star">✳</span> Pick up where you left off.</div>
+      </div>
+
+      <div class="hero-visual" aria-label="Preview of a personal study space">
+        <div class="floating-note note-top"><span class="tiny-spark">✦</span> a little progress, every day</div>
+        <div class="study-card">
+          <div class="study-card-top"><span class="card-kicker">YOUR STUDY SPACE</span><span class="status-dot"></span></div>
+          <div class="study-card-title">Today, at your pace.</div>
+          <div class="progress-label"><span>My learning</span><span id="landingProgressLabel">0 of 10 subjects</span></div>
+          <div class="progress-track"><span id="landingProgressBar" style="width:0%"></span></div>
+          <div class="mini-subjects">
+            <div class="mini-subject"><span class="mini-icon rose">01</span><span>Alternative Investments</span><span class="mini-arrow">↗</span></div>
+            <div class="mini-subject"><span class="mini-icon lavender">02</span><span>Corporate Issuers</span><span class="mini-arrow">↗</span></div>
+            <div class="mini-subject"><span class="mini-icon cream">03</span><span>Economics</span><span class="mini-arrow">↗</span></div>
+          </div>
+          <a class="card-continue" href="dashboard.html">Continue learning <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="floating-note note-bottom"><span class="little-check">✓</span> progress that feels like yours</div>
+        <div class="decorative-orb orb-one"></div><div class="decorative-orb orb-two"></div>
+      </div>
+    </section>
+
+    <section class="subjects-preview" id="subjects">
+      <div class="section-heading">
+        <div><div class="eyebrow">YOUR LEARNING, TOGETHER</div><h2>All your subjects.<br><em>One calm place.</em></h2></div>
+        <a class="quiet-link" href="dashboard.html">View all <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="subject-strip" id="landingSubjects" aria-label="Subject list"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><a class="wordmark footer-wordmark" href="index.html"><span class="jewel-mark" aria-hidden="true">✦</span><span>JEWEL</span></a><span>A space of your own.</span></footer>
+</body>
+</html>

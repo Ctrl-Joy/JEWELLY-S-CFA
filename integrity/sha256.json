@@ -1,0 +1,52 @@
+{
+  "source_sha256": {
+    "CFA_Alternative_Investments_Study_Atelier(1).html": "7f4f23c2dba5fad3e077d77b82e63dadfb1f31aaf01d5436393008c3c3fcd9cf",
+    "CFA_Corporate_Issuers_Study_Atelier(2)(1).html": "2a81dd4321855a5a8662e796b89a9ae0c437983e05b6ec3c2eab2c1b83dc5035",
+    "CFA_Derivatives_Study_Atelier(2)(1).html": "5b9928b3e63e08dcec07169d9214c79d03b84af22cf53f6772986a19f2833ea3",
+    "CFA_Economics_Study_Atelier(8)(1).html": "7c14347cb049f3925c665b56070ada8ba76ff96241cd8b7abacf577dde8f8a4f",
+    "CFA_Equity_Investments_Study_Atelier(2)(1).html": "014319c5924183077069d133e35c3fb9673902624089ea4fed8e35dd488c086d",
+    "CFA_Ethics_and_Professional_Standards_Study_Atelier(2)(1).html": "95696a9a734bebdf2a722ea910ef4c4d0b96614ccadfbeb918780f697301e575",
+    "CFA_Financial_Statement_Analysis_Study_Atelier(2)(1).html": "4f35f229913cca8b836a2f7c8f53c925e6199e89c68699f68e67e3cf63c5bbee",
+    "CFA_Fixed_Income_Study_Atelier(2)(1).html": "45a4d1533571c70d9501d9f260759234ef5e20435d3d2f96d3e42ec6faa75529",
+    "CFA_Portfolio_Management_Study_Atelier(4)(1).html": "99dcf94f7b5a38366dab427ec4e2130d3269e095f53b1883db00a11a8532c2a0",
+    "CFA_Quantitative_Methods_Study_Atelier(1)(1).html": "40f8d635806bf36b2988cfd6d2a71af2c8456907f469411f03aaa1d5cc5fd875"
+  },
+  "packaged_copy_sha256": {
+    "CFA_Alternative_Investments_Study_Atelier(1).html": "7f4f23c2dba5fad3e077d77b82e63dadfb1f31aaf01d5436393008c3c3fcd9cf",
+    "CFA_Corporate_Issuers_Study_Atelier(2)(1).html": "2a81dd4321855a5a8662e796b89a9ae0c437983e05b6ec3c2eab2c1b83dc5035",
+    "CFA_Derivatives_Study_Atelier(2)(1).html": "5b9928b3e63e08dcec07169d9214c79d03b84af22cf53f6772986a19f2833ea3",
+    "CFA_Economics_Study_Atelier(8)(1).html": "7c14347cb049f3925c665b56070ada8ba76ff96241cd8b7abacf577dde8f8a4f",
+    "CFA_Equity_Investments_Study_Atelier(2)(1).html": "014319c5924183077069d133e35c3fb9673902624089ea4fed8e35dd488c086d",
+    "CFA_Ethics_and_Professional_Standards_Study_Atelier(2)(1).html": "95696a9a734bebdf2a722ea910ef4c4d0b96614ccadfbeb918780f697301e575",
+    "CFA_Financial_Statement_Analysis_Study_Atelier(2)(1).html": "4f35f229913cca8b836a2f7c8f53c925e6199e89c68699f68e67e3cf63c5bbee",
+    "CFA_Fixed_Income_Study_Atelier(2)(1).html": "45a4d1533571c70d9501d9f260759234ef5e20435d3d2f96d3e42ec6faa75529",
+    "CFA_Portfolio_Management_Study_Atelier(4)(1).html": "99dcf94f7b5a38366dab427ec4e2130d3269e095f53b1883db00a11a8532c2a0",
+    "CFA_Quantitative_Methods_Study_Atelier(1)(1).html": "40f8d635806bf36b2988cfd6d2a71af2c8456907f469411f03aaa1d5cc5fd875"
+  },
+  "byte_identical": {
+    "CFA_Alternative_Investments_Study_Atelier(1).html": true,
+    "CFA_Corporate_Issuers_Study_Atelier(2)(1).html": true,
+    "CFA_Derivatives_Study_Atelier(2)(1).html": true,
+    "CFA_Economics_Study_Atelier(8)(1).html": true,
+    "CFA_Equity_Investments_Study_Atelier(2)(1).html": true,
+    "CFA_Ethics_and_Professional_Standards_Study_Atelier(2)(1).html": true,
+    "CFA_Financial_Statement_Analysis_Study_Atelier(2)(1).html": true,
+    "CFA_Fixed_Income_Study_Atelier(2)(1).html": true,
+    "CFA_Portfolio_Management_Study_Atelier(4)(1).html": true,
+    "CFA_Quantitative_Methods_Study_Atelier(1)(1).html": true
+  },
+  "all_identical": true,
+  "source_unchanged_after_build": {
+    "CFA_Alternative_Investments_Study_Atelier(1).html": true,
+    "CFA_Corporate_Issuers_Study_Atelier(2)(1).html": true,
+    "CFA_Derivatives_Study_Atelier(2)(1).html": true,
+    "CFA_Economics_Study_Atelier(8)(1).html": true,
+    "CFA_Equity_Investments_Study_Atelier(2)(1).html": true,
+    "CFA_Ethics_and_Professional_Standards_Study_Atelier(2)(1).html": true,
+    "CFA_Financial_Statement_Analysis_Study_Atelier(2)(1).html": true,
+    "CFA_Fixed_Income_Study_Atelier(2)(1).html": true,
+    "CFA_Portfolio_Management_Study_Atelier(4)(1).html": true,
+    "CFA_Quantitative_Methods_Study_Atelier(1)(1).html": true
+  },
+  "all_source_files_unchanged_after_build": true
+}
