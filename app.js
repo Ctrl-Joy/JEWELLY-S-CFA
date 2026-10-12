@@ -8,7 +8,7 @@ const JEWEL_SUBJECTS = [
   {name:"Financial Statement Analysis",file:"CFA_Financial_Statement_Analysis_Study_Atelier(2)(1).html",number:"07"},
   {name:"Fixed Income",file:"CFA_Fixed_Income_Study_Atelier(2)(1).html",number:"08"},
   {name:"Portfolio Management",file:"CFA_Portfolio_Management_Study_Atelier(4)(1).html",number:"09"},
-  {name:"Quantitative Methods",file:"CFA_Quantitative_Methods_Study_Atelier(1).html",number:"10"}
+  {name:"Quantitative Methods",file:"CFA_Quantitative_Methods_Study_Atelier(1)(1).html",number:"10"}
 ];
 const STORAGE = {theme:"jewel-theme",completed:"jewel-completed",recent:"jewel-recent",goal:"jewel-goal"};
 const readJSON = (key,fallback) => { try { const v=localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } };
