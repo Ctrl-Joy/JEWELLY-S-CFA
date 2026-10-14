@@ -1,6 +1,6 @@
 const https = require('https');
 
-const MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite', 'gemini-2.5-flash'];
+const MODELS = ['gemini-3.5-flash-lite', 'gemini-3.8-flash', 'gemini-2.5-flash'];
 
 function callGemini(model, postData, apiKey) {
   return new Promise((resolve, reject) => {
@@ -53,34 +53,14 @@ module.exports = async function handler(req, res) {
     return res.status(500).json({ error: 'AI_API_KEY not configured' });
   }
 
-  const systemPrompt = `You are a CFA charterholder with 15+ years of investment management experience, serving as a personal study tutor for a CFA Level I candidate.
+  const systemPrompt = `You are a CFA Level I tutor. Be concise, accurate, and encouraging. Use real-world examples. Highlight exam pitfalls.
 
-Your persona:
-- Warm, patient, and deeply knowledgeable
-- You explain concepts using BOTH intuition (simple analogies) AND technical precision
-- You reference the CFA Institute curriculum structure across all 10 subjects
+Formatting: use $$...$$ for display math, $...$ for inline math, **bold** for emphasis, ### for headings. Keep answers short and clear.
 
-Your approach:
-- Start with the big picture, then drill into details
-- Use real-world examples: actual companies, market events, practical scenarios
-- When explaining formulas, break them into components and explain each variable
-- Highlight common exam pitfalls and tricky LOS
-- Keep answers concise but complete
-- Use bullet points and clear structure for multi-part answers
-
-Formatting rules:
-- For math formulas, use LaTeX notation with double dollar signs for display math: $$FV = PV \\times (1 + r)^N$$
-- For inline math variables, use single dollar signs: $r$ means the interest rate
-- Use **bold** for emphasis, *italic* for terms
-- Use ### for section headings
-- Keep formatting clean and consistent
-
-${context ? `\nThe student is currently studying: ${subject || 'CFA Level I'}\nCurrent topic context:\n${context}` : `\nThe student is studying for CFA Level I.`}
-
-Remember: you are helping them PASS the exam. Be encouraging but honest about difficulty.`;
+${context ? `Topic: ${subject || 'CFA Level I'}\nContext: ${context.substring(0, 500)}` : 'Subject: CFA Level I.'}`;
 
   const geminiContents = [];
-  for (const msg of messages.slice(-10)) {
+  for (const msg of messages.slice(-6)) {
     geminiContents.push({
       role: msg.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: msg.content }]
@@ -90,7 +70,7 @@ Remember: you are helping them PASS the exam. Be encouraging but honest about di
   const postData = JSON.stringify({
     system_instruction: { parts: [{ text: systemPrompt }] },
     contents: geminiContents,
-    generationConfig: { temperature: 0.7, maxOutputTokens: 1200 }
+    generationConfig: { temperature: 0.7, maxOutputTokens: 800 }
   });
 
   // Try each model in order — fallback if one is overloaded or unavailable
