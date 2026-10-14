@@ -199,4 +199,121 @@ document.querySelector('.stats .stat:nth-child(3) .num').textContent=`${Object.k
 document.querySelector('.stats .stat:nth-child(4) .num').textContent=`${Object.values(revised).filter(Boolean).length} / ${totalT}`;
 renderStudio();renderNotes();renderPractice();renderRecall();renderLibrary();updateStats();
 </script>
+
+<!-- AI CFA Study Assistant -->
+<style>
+.ai-fab{position:fixed;bottom:28px;right:28px;width:56px;height:56px;border-radius:50%;background:var(--plum,#76536c);color:#fff;border:none;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.2);z-index:9999;display:flex;align-items:center;justify-content:center;transition:transform .2s}
+.ai-fab:hover{transform:scale(1.08)}
+.ai-fab svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ai-panel{position:fixed;bottom:96px;right:28px;width:380px;max-width:calc(100vw - 40px);height:520px;max-height:calc(100vh - 140px);background:var(--paper,#fbf7f4);border:1px solid var(--line,#eadfe0);border-radius:16px;box-shadow:var(--shadow2,0 30px 90px rgba(69,44,59,.15));z-index:9999;display:none;flex-direction:column;overflow:hidden}
+.ai-panel.open{display:flex}
+.ai-panel-head{padding:14px 18px;border-bottom:1px solid var(--line,#eadfe0);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ai-panel-head span{font-weight:700;font-size:.95rem;color:var(--ink,#302832)}
+.ai-panel-head button{background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--muted,#887b86);padding:0 4px}
+.ai-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.ai-msg{max-width:88%;padding:10px 14px;border-radius:14px;font-size:.9rem;line-height:1.5;word-wrap:break-word;white-space:pre-wrap}
+.ai-msg.user{align-self:flex-end;background:var(--plum,#76536c);color:#fff;border-bottom-right-radius:4px}
+.ai-msg.bot{align-self:flex-start;background:var(--lav,#e9e2f0);color:var(--ink,#302832);border-bottom-left-radius:4px}
+.ai-msg.bot strong{font-weight:700}
+.ai-msg.typing{opacity:.6;font-style:italic}
+.ai-input-row{padding:12px;border-top:1px solid var(--line,#eadfe0);display:flex;gap:8px;flex-shrink:0}
+.ai-input-row input{flex:1;padding:10px 14px;border:1px solid var(--line,#eadfe0);border-radius:10px;background:var(--paper2,#fffdfb);color:var(--ink,#302832);font-size:.9rem;outline:none}
+.ai-input-row input:focus{border-color:var(--plum,#76536c)}
+.ai-input-row button{width:40px;height:40px;border-radius:10px;background:var(--plum,#76536c);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-input-row button:disabled{opacity:.4;cursor:default}
+.ai-input-row button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+@media(max-width:500px){.ai-panel{right:10px;bottom:88px;width:calc(100vw - 20px);height:calc(100vh - 120px)}.ai-fab{bottom:18px;right:18px}}
+</style>
+
+<button class="ai-fab" onclick="aiToggle()" aria-label="Open CFA Study Assistant">
+<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
+
+<div id="aiPanel" class="ai-panel">
+<div class="ai-panel-head"><span>CFA Study Assistant</span><button onclick="aiToggle()">&times;</button></div>
+<div id="aiMsgs" class="ai-msgs">
+<div class="ai-msg bot">Hi! I'm your CFA study assistant. Ask me anything about the CFA Level I curriculum, and I'll help you understand it. If you have a topic open, I can see it and give targeted help.</div>
+</div>
+<div class="ai-input-row">
+<input type="text" id="aiInput" placeholder="Ask about CFA concepts..." onkeydown="if(event.key==='Enter'&&!event.shiftKey)aiSend()">
+<button id="aiSendBtn" onclick="aiSend()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+</div>
+</div>
+
+<script>
+(function(){
+  var chatHist=[];
+  window.aiToggle=function(){document.getElementById('aiPanel').classList.toggle('open');var inp=document.getElementById('aiInput');if(document.getElementById('aiPanel').classList.contains('open'))setTimeout(function(){inp.focus()},100)};
+
+  function getCtx(){
+    var modal=document.getElementById('topicModal');
+    if(modal&&modal.classList.contains('open')){
+      var t=document.getElementById('modalTitle');
+      var b=document.getElementById('modalBody');
+      return(t?t.textContent:'')+': '+(b?b.textContent.substring(0,3000):'');
+    }
+    var sp=document.getElementById('studioTopicPanel');
+    if(sp&&sp.textContent.trim().length>50)return sp.textContent.substring(0,3000);
+    return '';
+  }
+
+  function addMsg(role,text){
+    var d=document.getElementById('aiMsgs');
+    var m=document.createElement('div');
+    m.className='ai-msg '+(role==='user'?'user':'bot');
+    m.textContent=text;
+    d.appendChild(m);
+    d.scrollTop=d.scrollHeight;
+    return m;
+  }
+
+  function formatReply(text){
+    return text
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\*(.+?)\*/g,'<em>$1</em>')
+      .replace(/`(.+?)`/g,'<code style="background:var(--lav2,#f5f0f7);padding:1px 5px;border-radius:4px;font-size:.85em">$1</code>');
+  }
+
+  window.aiSend=async function(){
+    var inp=document.getElementById('aiInput');
+    var btn=document.getElementById('aiSendBtn');
+    var msg=inp.value.trim();
+    if(!msg)return;
+    inp.value='';
+    btn.disabled=true;
+
+    addMsg('user',msg);
+    chatHist.push({role:'user',content:msg});
+
+    var typing=document.createElement('div');
+    typing.className='ai-msg bot typing';
+    typing.textContent='Thinking...';
+    document.getElementById('aiMsgs').appendChild(typing);
+    document.getElementById('aiMsgs').scrollTop=document.getElementById('aiMsgs').scrollHeight;
+
+    try{
+      var ctx=getCtx();
+      var subj=document.title||'CFA Level I';
+      var res=await fetch('/api/chat',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({messages:chatHist.slice(-10),context:ctx,subject:subj})
+      });
+      typing.remove();
+      if(!res.ok)throw new Error('Status '+res.status);
+      var data=await res.json();
+      var reply=data.reply||'Sorry, I could not generate a response.';
+      chatHist.push({role:'assistant',content:reply});
+      var el=addMsg('bot','');
+      el.innerHTML=formatReply(reply);
+    }catch(e){
+      typing.remove();
+      addMsg('bot','Sorry, I couldn\'t connect to the AI service. Please check that the API is configured in Vercel environment variables (AI_API_KEY, AI_BASE_URL, AI_MODEL).');
+    }
+    btn.disabled=false;
+    inp.focus();
+  };
+})();
+</script>
+
 </body></html>
