@@ -12,7 +12,7 @@ module.exports = async function handler(req, res) {
   }
 
   const API_KEY = process.env.AI_API_KEY;
-  const MODEL = process.env.AI_MODEL || 'gemini-2.0-flash';
+  const MODEL = process.env.AI_MODEL || 'gemini-3.8-flash';
 
   if (!API_KEY) {
     return res.status(500).json({ error: 'AI_API_KEY not configured' });
