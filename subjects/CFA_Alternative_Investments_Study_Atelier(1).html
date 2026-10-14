@@ -273,10 +273,20 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();if(e.ke
   }
 
   function formatReply(text){
-    return text
-      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
-      .replace(/\*(.+?)\*/g,'<em>$1</em>')
-      .replace(/`(.+?)`/g,'<code style="background:var(--lav2,#f5f0f7);padding:1px 5px;border-radius:4px;font-size:.85em">$1</code>');
+    // Protect LaTeX blocks from markdown processing
+    var blocks=[];
+    text=text.replace(/\$\$([\s\S]+?)\$\$/g,function(m,c){blocks.push('$$'+c+'$$');return '%%MATH'+(blocks.length-1)+'%%';});
+    text=text.replace(/\$([^\$\n]+?)\$/g,function(m,c){blocks.push('\\('+c+'\\)');return '%%MATH'+(blocks.length-1)+'%%';});
+    // Markdown formatting
+    text=text.replace(/###\s*(.+)/g,'<strong style="display:block;margin-top:10px;font-size:1em">$1</strong>');
+    text=text.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+    text=text.replace(/\*(.+?)\*/g,'<em>$1</em>');
+    text=text.replace(/`(.+?)`/g,'<code style="background:var(--lav2,#f5f0f7);padding:1px 5px;border-radius:4px;font-size:.85em">$1</code>');
+    text=text.replace(/^[\-\*]\s+/gm,'• ');
+    text=text.replace(/\n/g,'<br>');
+    // Restore math blocks
+    for(var i=0;i<blocks.length;i++){text=text.replace('%%MATH'+i+'%%',blocks[i]);}
+    return text;
   }
 
   window.aiSend=async function(){
@@ -310,7 +320,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();if(e.ke
       var reply=data.reply||'Sorry, I could not generate a response.';
       chatHist.push({role:'assistant',content:reply});
       var el=addMsg('bot','');
-      el.innerHTML=formatReply(reply);
+      el.innerHTML=formatReply(reply);if(window.MathJax&&window.MathJax.typesetPromise)window.MathJax.typesetPromise([el]).catch(function(){});
     }catch(e){
       typing.remove();
       addMsg('bot','Sorry, I couldn\'t connect to the AI service. Please check that the API is configured in Vercel environment variables (AI_API_KEY, AI_BASE_URL, AI_MODEL).');
