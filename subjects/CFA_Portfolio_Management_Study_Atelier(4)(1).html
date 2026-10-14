@@ -294,21 +294,27 @@ renderStudio();renderNotes();renderPractice();renderRecall();renderLibrary();upd
     try{
       var ctx=getCtx();
       var subj=document.title||'CFA Level I';
+      var ac=new AbortController();
+      var tid=setTimeout(function(){ac.abort();},25000);
       var res=await fetch('/api/chat',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({messages:chatHist.slice(-10),context:ctx,subject:subj})
+        body:JSON.stringify({messages:chatHist.slice(-10),context:ctx,subject:subj}),
+        signal:ac.signal
       });
+      clearTimeout(tid);
       typing.remove();
-      if(!res.ok)throw new Error('Status '+res.status);
+      if(!res.ok){var eb;try{eb=await res.json();}catch(x){}throw new Error(eb&&eb.error?eb.error:'Server error '+res.status);}
       var data=await res.json();
       var reply=data.reply||'Sorry, I could not generate a response.';
       chatHist.push({role:'assistant',content:reply});
       var el=addMsg('bot','');
       el.innerHTML=formatReply(reply);if(window.MathJax&&window.MathJax.typesetPromise)window.MathJax.typesetPromise([el]).catch(function(){});
     }catch(e){
+      clearTimeout(tid);
       typing.remove();
-      addMsg('bot','Sorry, I couldn\'t connect to the AI service. Please check that the API is configured in Vercel environment variables (AI_API_KEY, AI_BASE_URL, AI_MODEL).');
+      var emsg=e.name==='AbortError'?'Request timed out — the AI is slow right now. Please try again.':'Sorry: '+(e.message||'Could not connect.')+' Please try again.';
+      addMsg('bot',emsg);
     }
     btn.disabled=false;
     inp.focus();
