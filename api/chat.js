@@ -1,5 +1,35 @@
 const https = require('https');
 
+const MODELS = ['gemini-3.8-flash', 'gemini-3.5-flash-lite', 'gemini-2.5-flash'];
+
+function callGemini(model, postData, apiKey) {
+  return new Promise((resolve, reject) => {
+    const path = `/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    const request = https.request({
+      hostname: 'generativelanguage.googleapis.com',
+      path: path,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    }, (response) => {
+      let data = '';
+      response.on('data', (chunk) => { data += chunk; });
+      response.on('end', () => {
+        if (response.statusCode === 200) {
+          resolve(data);
+        } else {
+          reject({ status: response.statusCode, body: data, model: model });
+        }
+      });
+    });
+    request.on('error', (err) => reject({ status: 0, body: err.message, model: model }));
+    request.write(postData);
+    request.end();
+  });
+}
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -12,8 +42,6 @@ module.exports = async function handler(req, res) {
   }
 
   const API_KEY = process.env.AI_API_KEY;
-  const MODEL = 'gemini-3.8-flash';
-
   if (!API_KEY) {
     return res.status(500).json({ error: 'AI_API_KEY not configured' });
   }
@@ -51,39 +79,18 @@ Remember: you are helping them PASS the exam. Be encouraging but honest about di
     generationConfig: { temperature: 0.7, maxOutputTokens: 1200 }
   });
 
-  const path = `/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
-
-  try {
-    const body = await new Promise((resolve, reject) => {
-      const request = https.request({
-        hostname: 'generativelanguage.googleapis.com',
-        path: path,
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Content-Length': Buffer.byteLength(postData)
-        }
-      }, (response) => {
-        let data = '';
-        response.on('data', (chunk) => { data += chunk; });
-        response.on('end', () => {
-          if (response.statusCode !== 200) {
-            reject(new Error(`Gemini API error ${response.statusCode}: ${data}`));
-          } else {
-            resolve(data);
-          }
-        });
-      });
-      request.on('error', reject);
-      request.write(postData);
-      request.end();
-    });
-
-    const data = JSON.parse(body);
-    const reply = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
-    return res.status(200).json({ reply: reply || 'Sorry, I could not generate a response.' });
-  } catch (err) {
-    console.error('Chat API error:', err.message);
-    return res.status(502).json({ error: 'AI service error', detail: err.message });
+  // Try each model in order — fallback if one is overloaded or unavailable
+  for (const model of MODELS) {
+    try {
+      const body = await callGemini(model, postData, API_KEY);
+      const data = JSON.parse(body);
+      const reply = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text;
+      return res.status(200).json({ reply: reply || 'Sorry, I could not generate a response.' });
+    } catch (err) {
+      console.error(`Model ${err.model} failed (${err.status}), trying next...`);
+      continue;
+    }
   }
+
+  return res.status(502).json({ error: 'All AI models are currently busy. Please try again in a moment.' });
 };
